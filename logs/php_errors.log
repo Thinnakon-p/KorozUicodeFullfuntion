@@ -1,0 +1,6 @@
+[13-Oct-2025 07:15:42 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\login_process.php on line 39
+[13-Oct-2025 07:15:42 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[13-Oct-2025 07:15:44 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\login_process.php on line 39
+[13-Oct-2025 07:15:44 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[13-Oct-2025 07:15:55 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\login_process.php on line 39
+[13-Oct-2025 07:15:55 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)

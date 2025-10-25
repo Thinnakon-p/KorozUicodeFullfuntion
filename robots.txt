@@ -1,0 +1,273 @@
+User-agent: *
+Disallow: /dashboard.php
+
+ <script>
+        const postsContainer = document.getElementById("postsContainer");
+        const loading = document.getElementById("loading");
+        const toastContainer = document.getElementById("toastContainer");
+        const isLoggedIn = <?php echo isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true ? 'true' : 'false'; ?>;
+        let likeProcessing = new Map();
+
+        function showToast(message, description) {
+            const toast = document.createElement("div");
+            toast.className = "flex flex-col gap-2 w-60 sm:w-72 text-[10px] sm:text-xs z-50";
+            toast.innerHTML = `
+                <div class="success-alert cursor-default flex items-center justify-between w-full h-12 sm:h-14 rounded-lg bg-[#232531] px-[10px]">
+                    <div class="flex gap-2">
+                        <div class="text-[#2b9875] bg-white/5 backdrop-blur-xl p-1 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-white">${message}</p>
+                            <p class="text-gray-500">${description}</p>
+                        </div>
+                    </div>
+                    <button class="text-gray-600 hover:bg-white/5 p-1 rounded-md transition-colors ease-linear" onclick="this.parentElement.parentElement.remove()">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function updateLikeButton(postId, isLiked, likesCount, likeButton, likeCountElement) {
+            const checkbox = likeButton.querySelector('input');
+            checkbox.checked = isLiked;
+            likeCountElement.textContent = `${likesCount} ไลค์`;
+            likeButton.classList.toggle('disabled', !isLoggedIn);
+        }
+
+        function handleLike(postId, likeButton, likeCountElement) {
+            if (!isLoggedIn) {
+                showToast("กรุณาล็อกอิน", "ต้องล็อกอินเพื่อกดไลค์โพสต์");
+                return;
+            }
+            if (likeProcessing.get(postId)) {
+                console.log(`Like request for post ${postId} is already processing`);
+                return;
+            }
+
+            likeProcessing.set(postId, true);
+            likeButton.classList.add('disabled');
+
+            fetch('like-post.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `post_id=${postId}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    updateLikeButton(postId, data.liked, data.likes_count, likeButton, likeCountElement);
+                    const modalLikeButton = document.getElementById('modalLikeButton');
+                    const modalLikeCount = document.getElementById('modalLikeCount');
+                    const postLikeButton = document.getElementById(`likeButton-${postId}`);
+                    const postLikeCount = postLikeButton?.nextElementSibling;
+                    if (modalLikeButton && modalLikeCount && postLikeButton && postLikeCount) {
+                        updateLikeButton(postId, data.liked, data.likes_count, modalLikeButton, modalLikeCount);
+                        updateLikeButton(postId, data.liked, data.likes_count, postLikeButton, postLikeCount);
+                    }
+                    showToast(
+                        data.liked ? "กดไลค์สำเร็จ!" : "ยกเลิกไลค์สำเร็จ!",
+                        data.liked ? "คุณได้กดไลค์โพสต์นี้" : "คุณได้ยกเลิกไลค์โพสต์นี้"
+                    );
+                } else {
+                    showToast("เกิดข้อผิดพลาด", data.message || "ไม่สามารถอัปเดตสถานะไลค์ได้");
+                }
+            })
+            .catch(error => {
+                console.error('Like error:', error);
+                showToast("เกิดข้อผิดพลาด", "ขณะกดไลค์โพสต์: " + error.message);
+            })
+            .finally(() => {
+                likeProcessing.delete(postId);
+                likeButton.classList.remove('disabled');
+            });
+        }
+
+        loading.style.display = 'block';
+        fetch("get-posts.php")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                loading.style.display = 'none';
+                postsContainer.innerHTML = "";
+                if (data.error) {
+                    postsContainer.innerHTML = '<p class="text-red-500">เกิดข้อผิดพลาดในการโหลดโพสต์: ' + data.error + '</p>';
+                } else if (data.message === 'ไม่มีโพสต์ให้แสดง') {
+                    postsContainer.innerHTML = '<p class="text-gray-500">ไม่มีโพสต์ให้แสดง</p>';
+                } else {
+                    data.forEach(post => {
+                        const div = document.createElement("div");
+                        div.className = "bg-gray-800 p-4 rounded shadow hover:shadow-lg transition cursor-pointer";
+                        div.setAttribute('tabindex', '0');
+                        div.setAttribute('role', 'button');
+                        div.setAttribute('aria-pressed', 'false');
+                        div.setAttribute('aria-label', `ดูรายละเอียดโพสต์ ${post.title}`);
+                        div.innerHTML = `
+                            <img src="${post.image}" alt="${post.title}" class="w-full h-48 object-cover rounded mb-2">
+                            <h3 class="text-xl font-bold text-red-500">${post.title}</h3>
+                            <p class="text-gray-300 mb-2">${post.description}</p>
+                            <p class="text-sm text-gray-500">โพสต์เมื่อ: ${post.created_at}</p>
+                            <div class="like-container">
+                                <label class="ui-like" id="likeButton-${post.id}">
+                                    <input type="checkbox" ${post.user_liked ? 'checked' : ''} ${!isLoggedIn ? 'disabled' : ''}>
+                                    <div class="like">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.808,11.079C19.829,16.132,12,20.5,12,20.5s-7.829-4.368-8.808-9.421C2.227,6.1,5.066,3.5,8,3.5a4.444,4.444,0,0,1,4,2,4.444,4.444,0,0,1,4-2C18.934,3.5,21.773,6.1,20.808,11.079Z"></path></svg>
+                                    </div>
+                                </label>
+                                <span class="like-count">${post.likes_count} ไลค์</span>
+                            </div>
+                            <a href="${post.link}" class="text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded inline-block">ดาวน์โหลด</a>
+                        `;
+                        div.addEventListener('click', (e) => {
+                            if (!e.target.closest('.ui-like') && !e.target.closest('a')) {
+                                openModal(post);
+                            }
+                        });
+                        div.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                if (!e.target.closest('.ui-like') && !e.target.closest('a')) {
+                                    openModal(post);
+                                }
+                            }
+                        });
+                        const likeButton = div.querySelector(`#likeButton-${post.id}`);
+                        const likeCountElement = div.querySelector('.like-count');
+                        likeButton.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            handleLike(post.id, likeButton, likeCountElement);
+                        });
+                        postsContainer.appendChild(div);
+                    });
+                }
+            })
+            .catch(error => {
+                loading.style.display = 'none';
+                postsContainer.innerHTML = '<p class="text-red-500">เกิดข้อผิดพลาดในการโหลดโพสต์: ' + error.message + '</p>';
+                console.error('Fetch error:', error);
+            });
+
+        function openModal(post) {
+            const modal = document.getElementById('modal');
+            const modalImage = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalDownload = document.getElementById('modalDownload');
+            const modalLikeButton = document.getElementById('modalLikeButton');
+            const modalLikeCount = document.getElementById('modalLikeCount');
+
+            modalImage.src = post.image;
+            modalImage.alt = `ภาพขนาดเต็มของ ${post.title}`;
+            modalTitle.textContent = post.title;
+            modalDescription.textContent = post.description;
+            modalDownload.href = post.link;
+            modalDownload.setAttribute('aria-label', `ดาวน์โหลด ${post.title}`);
+            updateLikeButton(post.id, post.user_liked, post.likes_count, modalLikeButton, modalLikeCount);
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            const newModalLikeButton = modalLikeButton.cloneNode(true);
+            modalLikeButton.parentNode.replaceChild(newModalLikeButton, modalLikeButton);
+            newModalLikeButton.addEventListener('click', () => {
+                handleLike(post.id, newModalLikeButton, modalLikeCount);
+            });
+
+            trapFocus(modal);
+            document.addEventListener('keydown', escKeyListener);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.removeEventListener('keydown', escKeyListener);
+            document.getElementById('postsContainer').focus();
+        }
+
+        function escKeyListener(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        }
+
+        function trapFocus(element) {
+            const focusableElements = element.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
+            const firstFocusable = focusableElements[0];
+            const lastFocusable = focusableElements[focusableElements.length - 1];
+
+            firstFocusable.focus();
+
+            element.addEventListener('keydown', function(e) {
+                if (e.key === 'Tab') {
+                    if (e.shiftKey) {
+                        if (document.activeElement === firstFocusable) {
+                            e.preventDefault();
+                            lastFocusable.focus();
+                        }
+                    } else {
+                        if (document.activeElement === lastFocusable) {
+                            e.preventDefault();
+                            firstFocusable.focus();
+                        }
+                    }
+                }
+            });
+        }
+
+        document.getElementById('modalClose').addEventListener('click', closeModal);
+        document.getElementById('modalOverlay').addEventListener('click', closeModal);
+
+        const spaceBg = document.getElementById('space-bg');
+        function createStars() {
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = star.style.height = (Math.random() * 2 + 0.5) + 'px';
+                star.style.animationDelay = Math.random() * 4 + 's';
+                star.style.opacity = Math.random() * 0.5 + 0.3;
+                spaceBg.appendChild(star);
+            }
+        }
+
+        function createDriftStars() {
+            for (let i = 0; i < 20; i++) {
+                const driftStar = document.createElement('div');
+                driftStar.className = 'drift-star';
+                driftStar.style.left = Math.random() * 100 + '%';
+                driftStar.style.top = Math.random() * 100 + '%';
+                driftStar.style.animationDelay = Math.random() * 30 + 's';
+                spaceBg.appendChild(driftStar);
+            }
+        }
+
+        function createShootingStar() {
+            const shootingStar = document.createElement('div');
+            shootingStar.className = 'shooting-star';
+            shootingStar.style.top = Math.random() * 40 + '%';
+            spaceBg.appendChild(shootingStar);
+            setTimeout(() => shootingStar.remove(), 2000);
+        }
+
+        createStars();
+        createDriftStars();
+        setInterval(createShootingStar, 20000);
+    </script>

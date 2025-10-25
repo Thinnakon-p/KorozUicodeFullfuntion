@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>อัพโหลดโปรไฟล์แบบ Discord</title>
+    <style>
+        /* CSS สำหรับกรอบโปรไฟล์ */
+        .profile-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px;
+            flex-direction: column; /* จัดแนวตั้งสำหรับปุ่มอัพโหลด */
+        }
+
+        .profile-frame {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid #5865F2; /* สีน้ำเงิน Discord */
+            padding: 4px;
+            background-color: #5865F2;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 10px; /* ระยะห่างจากปุ่ม */
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* ปุ่มอัพโหลด */
+        .upload-btn {
+            background-color: #5865F2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .upload-btn:hover {
+            background-color: #4752C4;
+        }
+
+        /* Input file ซ่อนไว้ */
+        .file-input {
+            display: none;
+        }
+
+        /* ชื่อผู้ใช้ */
+        .profile-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* ข้อความแจ้งเตือน (ถ้ามี error) */
+        .error-msg {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-frame">
+            <!-- รูปเริ่มต้น (placeholder) - เปลี่ยน src เป็นรูป default ของคุณ -->
+            <img src="https://e7.pngegg.com/pngimages/72/158/png-clipart-light-violet-magenta-purple-lilac-circulo-pink-m-jewellery-thumbnail.png" alt="รูปโปรไฟล์" class="profile-img" id="profileImage">
+        </div>
+        
+        <!-- ปุ่มอัพโหลด -->
+        <label for="fileInput" class="upload-btn">อัพโหลดรูปโปรไฟล์</label>
+        <input type="file" id="fileInput" class="file-input" accept="image/jpeg, image/png, image/gif">
+        
+        <!-- ข้อความแจ้งเตือน -->
+        <div id="errorMsg" class="error-msg"></div>
+        
+        <span class="profile-name">ชื่อผู้ใช้ของคุณ</span>
+    </div>
+
+    <script>
+        // JavaScript สำหรับเลือกและ preview รูป
+        const fileInput = document.getElementById('fileInput');
+        const profileImage = document.getElementById('profileImage');
+        const errorMsg = document.getElementById('errorMsg');
+
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // ตรวจสอบขนาดไฟล์ (ไม่เกิน 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showError('ไฟล์ใหญ่เกินไป! เลือกไฟล์ไม่เกิน 5MB');
+                return;
+            }
+
+            // ตรวจสอบประเภทไฟล์
+            if (!file.type.startsWith('image/')) {
+                showError('เลือกไฟล์รูปภาพเท่านั้น (JPG, PNG, GIF)');
+                return;
+            }
+
+            // Preview รูปทันที
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                profileImage.src = e.target.result;
+                hideError(); // ลบข้อความ error
+            };
+            reader.readAsDataURL(file);
+
+            // ถ้าต้องการอัพโหลดไป server ทันที (uncomment และปรับ URL)
+            // uploadToServer(file);
+        });
+
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.style.display = 'block';
+        }
+
+        function hideError() {
+            errorMsg.style.display = 'none';
+        }
+
+        // ฟังก์ชันอัพโหลดไป server (ตัวอย่างด้วย fetch - ต้องมี backend)
+        function uploadToServer(file) {
+            const formData = new FormData();
+            formData.append('profileImage', file); // ชื่อ field สำหรับ backend
+
+            fetch('/upload-profile.php', { // เปลี่ยนเป็น URL endpoint ของคุณ
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('อัพโหลดสำเร็จ! URL รูปใหม่: ' + data.url);
+                    // อัพเดต src ของรูปด้วย URL จาก server ถ้าต้องการ
+                } else {
+                    showError('อัพโหลดล้มเหลว: ' + data.message);
+                }
+            })
+            .catch(error => {
+                showError('เกิดข้อผิดพลาดในการอัพโหลด');
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

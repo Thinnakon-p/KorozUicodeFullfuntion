@@ -1,0 +1,42 @@
+[12-Oct-2025 08:36:23 Europe/Berlin] PHP Warning:  Undefined array key "user_id" in C:\xampp\htdocs\demo\get-posts.php on line 18
+[12-Oct-2025 08:40:52 Europe/Berlin] PHP Warning:  Undefined array key "user_id" in C:\xampp\htdocs\demo\get-posts.php on line 18
+[12-Oct-2025 08:42:20 Europe/Berlin] PHP Warning:  Undefined array key "user_id" in C:\xampp\htdocs\demo\get-posts.php on line 18
+[12-Oct-2025 08:43:34 Europe/Berlin] PHP Warning:  Undefined array key "user_id" in C:\xampp\htdocs\demo\get-posts.php on line 18
+[12-Oct-2025 08:44:10 Europe/Berlin] Invalid user_id: 0 or post_id: 2
+[12-Oct-2025 08:44:10 Europe/Berlin] Invalid user_id: 0 or post_id: 2
+[12-Oct-2025 08:44:16 Europe/Berlin] PHP Warning:  Undefined array key "user_id" in C:\xampp\htdocs\demo\get-posts.php on line 18
+[12-Oct-2025 08:44:20 Europe/Berlin] Invalid user_id: 0 or post_id: 2
+[12-Oct-2025 08:44:20 Europe/Berlin] Invalid user_id: 0 or post_id: 2
+[12-Oct-2025 08:44:26 Europe/Berlin] PHP Warning:  Undefined array key "user_id" in C:\xampp\htdocs\demo\get-posts.php on line 18
+[12-Oct-2025 08:44:28 Europe/Berlin] Invalid user_id: 0 or post_id: 1
+[12-Oct-2025 08:44:28 Europe/Berlin] Invalid user_id: 0 or post_id: 1
+[13-Oct-2025 07:03:17 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\login_process.php on line 36
+[13-Oct-2025 07:03:17 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[13-Oct-2025 07:03:19 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\login_process.php on line 36
+[13-Oct-2025 07:03:19 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[13-Oct-2025 07:04:10 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\login_process.php on line 36
+[13-Oct-2025 07:04:10 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[13-Oct-2025 07:04:50 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\fetch_posts.php on line 29
+[13-Oct-2025 07:04:50 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[13-Oct-2025 07:05:12 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\fetch_posts.php on line 29
+[13-Oct-2025 07:05:12 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[13-Oct-2025 07:05:18 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\fetch_posts.php on line 29
+[13-Oct-2025 07:05:18 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[13-Oct-2025 07:05:28 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\fetch_posts.php on line 29
+[13-Oct-2025 07:05:28 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[13-Oct-2025 07:05:36 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\fetch_posts.php on line 29
+[13-Oct-2025 07:05:36 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[13-Oct-2025 07:06:35 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\login_process.php on line 36
+[13-Oct-2025 07:06:35 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[13-Oct-2025 07:18:12 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\fetch_posts.php on line 29
+[13-Oct-2025 07:18:12 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[13-Oct-2025 07:18:42 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\fetch_posts.php on line 29
+[13-Oct-2025 07:18:42 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[13-Oct-2025 07:19:04 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\fetch_posts.php on line 29
+[13-Oct-2025 07:19:04 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[13-Oct-2025 07:19:42 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\fetch_posts.php on line 29
+[13-Oct-2025 07:19:42 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[13-Oct-2025 07:21:53 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'app_user'@'localhost' (using password: YES) in C:\xampp\htdocs\demo\fetch_posts.php on line 29
+[13-Oct-2025 07:21:53 Europe/Berlin] Database connection failed: Access denied for user 'app_user'@'localhost' (using password: YES)
+[14-Oct-2025 06:19:05 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): No connection could be made because the target machine actively refused it in C:\xampp\htdocs\demo\get-posts.php on line 10
+[14-Oct-2025 06:19:05 Europe/Berlin] Database connection failed: No connection could be made because the target machine actively refused it
